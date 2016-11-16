@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+import csv
+import requests
+import StringIO
+
+url = 'http://ourairports.com/data/airports.csv'
+
+fpin = StringIO.StringIO(requests.get(url).content)
+
+headers = ['Name', 'Latitude', 'Longitude', 'Details']
+
+with open('data.csv', 'wb') as fpout:
+    writer = csv.writer(fpout)
+    writer.writerow(headers)
+
+    reader = csv.reader(fpin)
+    headers = reader.next()
+
+    for row in reader:
+        entry = dict(zip(headers, row))
+
+        if entry['iata_code']:
+            name = entry['name']
+            latitude = entry['latitude_deg']
+            longitude = entry['longitude_deg']
+            details = entry['iata_code']
+
+            writer.writerow([name, latitude, longitude, details])
