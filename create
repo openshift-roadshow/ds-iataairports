@@ -2,20 +2,20 @@
 
 import csv
 import requests
-import StringIO
+import io
 
 url = 'http://ourairports.com/data/airports.csv'
 
-fpin = StringIO.StringIO(requests.get(url).content)
+fpin = io.StringIO(requests.get(url).text)
 
 headers = ['Name', 'Latitude', 'Longitude', 'Details']
 
-with open('data.csv', 'wb') as fpout:
+with open('data.csv', 'w', encoding='UTF-8') as fpout:
     writer = csv.writer(fpout)
     writer.writerow(headers)
 
     reader = csv.reader(fpin)
-    headers = reader.next()
+    headers = next(reader)
 
     for row in reader:
         entry = dict(zip(headers, row))
